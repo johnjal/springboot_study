@@ -6,7 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import umc.study.apiPayLoad.code.status.ErrorStatus;
-import umc.study.apiPayLoad.exception.handler.TempHandler;
+import umc.study.apiPayLoad.exception.handler.GeneralHandler;
 import umc.study.domain.Member;
 import umc.study.domain.Mission;
 import umc.study.domain.Region;
@@ -39,15 +39,19 @@ public class MissionQueryServiceImpl implements MissionQueryService {
         Member member = memberRepository.findById(memberId).orElse(null);
 
         if (member == null) {
-            throw new TempHandler(ErrorStatus.MEMBER_NOT_FOUND);
+            throw new GeneralHandler(ErrorStatus.MEMBER_NOT_FOUND);
         }
         return memberMissionRepository.findMissionDynamicQuery(member, status, pageable);
     }
 
     @Override
-    public Page<Mission> findMissionByRegionExMember(Long memberId, Long regionId, MissionStatus status, Pageable pageable) {
-        Member member = memberRepository.findById(memberId).orElse(null);
-        Region region = regionRepository.findById(regionId).orElse(null);
+    public Page<Mission> findMissionByRegionExMember(Long memberId, Long regionId, Pageable pageable) {
+        Member member; Region region;
+        if (memberId == null) member = null;
+        else member = memberRepository.findById(memberId).orElse(null);
+
+        if (regionId == null) region = null;
+        else region = regionRepository.findById(regionId).orElse(null);
 
         List<Long> exList = memberMissionRepository.findMissionIdByMemberAndStatus(member, null);
 

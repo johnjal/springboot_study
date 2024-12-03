@@ -72,4 +72,5 @@ public class MemberMissionRepositoryImpl implements MemberMissionRepositoryCusto
 
         return new PageImpl<>(missions, pageable, total);
     }
+
 }
