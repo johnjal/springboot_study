@@ -1,10 +1,10 @@
 package umc.study.service.MemberService;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import jakarta.transaction.Transactional;
 import umc.study.apiPayLoad.code.status.ErrorStatus;
-import umc.study.apiPayLoad.exception.handler.FoodCategoryHandler;
+import umc.study.apiPayLoad.exception.handler.GeneralHandler;
 import umc.study.converter.MemberConverter;
 import umc.study.domain.FoodCategory;
 import umc.study.domain.Member;
@@ -28,7 +28,7 @@ public class MemberCommandServiceImpl implements MemberCommandService {
 
         Member newMember = MemberConverter.toMember(request);
         List<FoodCategory> foodCategoryList = request.getPreferCategory().stream()
-                .map(category -> foodCategoryRepository.findById(category).orElseThrow(() -> new FoodCategoryHandler(ErrorStatus.FOOD_CATEGORY_NOT_FOUND))).toList();
+                .map(category -> foodCategoryRepository.findById(category).orElseThrow(() -> new GeneralHandler(ErrorStatus.FOOD_CATEGORY_NOT_FOUND))).toList();
 
         List<MemberPrefer> memberPreferList = MemberConverter.toMemberPreferList(foodCategoryList, newMember);
 

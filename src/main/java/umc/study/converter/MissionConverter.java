@@ -1,5 +1,6 @@
 package umc.study.converter;
 
+import org.springframework.data.domain.Page;
 import umc.study.domain.Mission;
 import umc.study.domain.Region;
 import umc.study.domain.Store;
@@ -9,14 +10,28 @@ import umc.study.web.dto.MissionResponse;
 
 public class MissionConverter {
 
-    public static MissionResponse.MissionDTO toMissionDTO(Mission mission){
-        return MissionResponse.MissionDTO.builder()
+    public static MissionResponse.findResultDTO toMissionDTO(Mission mission){
+        return MissionResponse.findResultDTO.builder()
                 .missionId(mission.getId())
-                .store(mission.getStore())
+                .storeId(mission.getStore().getId())
+                .storeName(mission.getStore().getName())
                 .missionSpec(mission.getMissionSpec())
-                .region(mission.getRegion())
+                .regionId(mission.getRegion().getId())
+                .regionName(mission.getRegion().getName())
                 .reward(mission.getReward())
                 .deadline(mission.getDeadline())
+                .build();
+    }
+
+    public static MissionResponse.findResultListDTO toResultListDTO(Page<Mission> missionList){
+        return MissionResponse.findResultListDTO.builder()
+                .isLast(missionList.isLast())
+                .isFirst(missionList.isFirst())
+                .totalPage(missionList.getTotalPages())
+                .totalElements(missionList.getTotalElements())
+                .listSize(missionList.getSize())
+                .missionList(missionList.stream()
+                        .map(MissionConverter::toMissionDTO).toList())
                 .build();
     }
 

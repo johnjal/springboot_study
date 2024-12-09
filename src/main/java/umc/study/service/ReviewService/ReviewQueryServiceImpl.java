@@ -1,8 +1,13 @@
 package umc.study.service.ReviewService;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import umc.study.apiPayLoad.code.status.ErrorStatus;
+import umc.study.apiPayLoad.exception.handler.GeneralHandler;
 import umc.study.domain.Member;
 import umc.study.domain.Review;
 import umc.study.domain.Store;
@@ -39,5 +44,19 @@ public class ReviewQueryServiceImpl implements ReviewQueryService {
         Review review = new Review(body, score, store, member);
         reviewRepository.save(review);
         return review;
+    }
+
+    @Override
+    public Page<Review> findReviewByStore(Long storeId, Integer page, Integer size) {
+        Store store = storeRepository.findById(storeId).orElseThrow(() -> new GeneralHandler(ErrorStatus.STORE_NOT_FOUND));
+
+        return reviewRepository.findAllByStoreCustom(store, PageRequest.of(page, size, Sort.by("createdAt").descending()));
+    }
+
+    @Override
+    public Page<Review> findReviewByMember(Long memberId, Integer page, Integer size) {
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new GeneralHandler(ErrorStatus.MEMBER_NOT_FOUND));
+
+        return reviewRepository.findAllByMemberCustom(member, PageRequest.of(page, size, Sort.by("createdAt").descending()));
     }
 }

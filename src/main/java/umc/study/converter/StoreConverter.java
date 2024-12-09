@@ -28,4 +28,5 @@ public class StoreConverter {
                 .createdAt(store.getCreatedAt())
                 .build();
     }
+
 }

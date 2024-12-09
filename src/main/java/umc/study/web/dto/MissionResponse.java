@@ -4,11 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import umc.study.domain.Region;
-import umc.study.domain.Store;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class MissionResponse {
 
@@ -16,13 +15,28 @@ public class MissionResponse {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class MissionDTO{
+    public static class findResultDTO {
         private Long missionId;
         private Integer reward;
         private LocalDate deadline;
         private String missionSpec;
-        private Store store;
-        private Region region;
+        private Long storeId;
+        private String storeName;
+        private Long regionId;
+        private String regionName;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class findResultListDTO {
+        private List<MissionResponse.findResultDTO> missionList;
+        Integer listSize;
+        Integer totalPage;
+        Long totalElements;
+        Boolean isFirst;
+        Boolean isLast;
     }
 
     @Builder
@@ -30,8 +44,8 @@ public class MissionResponse {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class AddResultDTO {
-        Long missionId;
-        LocalDateTime createdAt;
+        private Long missionId;
+        private LocalDateTime createdAt;
     }
 
     @Builder
@@ -39,7 +53,7 @@ public class MissionResponse {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ChallengeResultDTO {
-        Long memberMissionId;
-        LocalDateTime createdAt;
+        private Long memberMissionId;
+        private LocalDateTime createdAt;
     }
 }
