@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
-public class MemberRepositoryImpl {
+public class MemberRepositoryImpl implements MemberRepositoryCustom{
 }

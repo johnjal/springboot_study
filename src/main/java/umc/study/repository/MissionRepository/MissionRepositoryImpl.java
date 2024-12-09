@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import umc.study.domain.Mission;
 import umc.study.domain.QMission;
 import umc.study.domain.Region;
+import umc.study.domain.Store;
 
 import java.util.List;
 
@@ -32,18 +33,17 @@ public class MissionRepositoryImpl implements MissionRepositoryCustom{
     }
 
     @Override
-    public Page<Mission> findByRegion(Region region, Pageable pageable, List<Long> exceptionList) {
+    public Page<Mission> findByRegion(Region targetRegion, Pageable pageable, List<Long> exceptionList) {
         BooleanBuilder predicate = new BooleanBuilder();
 
-        if (region != null) {
-            predicate.and(mission.region.eq(region));
+        if (targetRegion != null) {
+            predicate.and(mission.region.id.eq(targetRegion.getId()));
         }
 
         if (exceptionList != null && !exceptionList.isEmpty()) {
             predicate.and(mission.id.notIn(exceptionList));
         }
 
-        // Pagination. 매번 total 계산하는 비효율성이 존재. Cache 로 해결 가능
         List<Mission> missions = jpaQueryFactory
                 .selectFrom(mission)
                 .join(mission.store).fetchJoin() // N+1
@@ -54,11 +54,36 @@ public class MissionRepositoryImpl implements MissionRepositoryCustom{
                 .fetch();
 
         long total = jpaQueryFactory
+                .select(mission.count())
+                .from(mission)
+                .where(predicate)
+                .fetchFirst();
+
+        return new PageImpl<>(missions, pageable, total);
+    }
+
+    @Override
+    public Page<Mission> findByStore(Store store, Pageable pageable) {
+        BooleanBuilder predicate = new BooleanBuilder();
+
+        if (store != null) {
+            predicate.and(mission.store.id.eq(store.getId()));
+        }
+
+        List<Mission> missions = jpaQueryFactory
                 .selectFrom(mission)
                 .join(mission.store).fetchJoin() // N+1
                 .join(mission.region).fetchJoin() // N+1
                 .where(predicate)
-                .fetchCount();
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        long total = jpaQueryFactory
+                .select(mission.count())
+                .from(mission)
+                .where(predicate)
+                .fetchFirst();
 
         return new PageImpl<>(missions, pageable, total);
     }

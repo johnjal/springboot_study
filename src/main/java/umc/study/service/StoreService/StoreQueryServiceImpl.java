@@ -1,8 +1,8 @@
 package umc.study.service.StoreService;
 
-import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import umc.study.domain.Store;
 import umc.study.repository.StoreRepository.StoreRepository;
 
